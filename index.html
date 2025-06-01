@@ -1,22 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>p5.js Starter Project</title>
-    <link rel="stylesheet" href="style.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chatty chat chat</title>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main>
-	<form action="">
-		<input type="text" id="input" name="content">
-		<button id="button" name="button">Click me</button>
-	</form>
-    <div id="sketch"></div>
-    <a href="index.js">souce code</a>
-    </main>
-    <script src="lib/p5.min.js"></script>
+	<main>
+		<div class="chat-history">
 
-    <script src="index.js"></script>
+		</div>
+		<form>
+			<form>
+	<input type="text" name="content">
+	<div class="submit-buttons">
+  <button type="button" data-special="start">Start</button>
+  <button type="button" data-special="end">End</button>
+</div>
+
+	<form>
+  <div class="color-buttons">
+    <button type="button" data-color="red">Red</button>
+    <button type="button" data-color="orange">Orange</button>
+    <button type="button" data-color="yellow">Yellow</button>
+    <button type="button" data-color="green">Green</button>
+    <button type="button" data-color="blue">Blue</button>
+    <button type="button" data-color="purple">Purple</button>
+    <button type="button" data-color="pink">Pink</button>
+    <button type="button" data-color="black">Black</button>
+  </div>
+
+</form>
+
+	</div>
+</form>
+
+
+	</main>
+	<script src="index.js"></script>
 </body>
 </html>

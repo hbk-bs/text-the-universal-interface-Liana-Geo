@@ -88,6 +88,27 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 });
 
+	// Add event listeners for color buttons
+	const colorButtons = document.querySelectorAll('.color-buttons button');
+	colorButtons.forEach(button => {
+		button.addEventListener('click', () => {
+			const color = button.getAttribute('data-color');
+			if (!color) return;
+			handleColorInput(color);
+		});
+	});
+
+		// Add event listeners for special message buttons (start, end)
+	const specialButtons = document.querySelectorAll('.submit-buttons button');
+	specialButtons.forEach(button => {
+		button.addEventListener('click', () => {
+			const message = button.getAttribute('data-special');
+			if (!message) return;
+			handleColorInput(message); // Reuses the same function to send it
+		});
+	});
+
+
 function addToChatHistoryElement(mhistory) {
 	const htmlStrings = mhistory.messages.map((message) => {
 		return message.role === 'system'
@@ -96,6 +117,37 @@ function addToChatHistoryElement(mhistory) {
 	});
 	return htmlStrings.join('');
 }
+
+async function handleColorInput(color) {
+	const chatHistoryElement = document.querySelector('.chat-history');
+	if (!chatHistoryElement) return;
+
+	messageHistory.messages.push({ role: 'user', content: color });
+	messageHistory = truncateHistory(messageHistory);
+	chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
+	scrollToBottom(chatHistoryElement);
+
+	const response = await fetch(apiEndpoint, {
+		method: 'POST',
+		headers: {
+			'content-type': 'application/json',
+		},
+		body: JSON.stringify(messageHistory),
+	});
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		throw new Error(errorText);
+	}
+
+	const json = await response.json();
+	// @ts-ignore
+	messageHistory.messages.push(json.completion.choices[0].message);
+	messageHistory = truncateHistory(messageHistory);
+	chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
+	scrollToBottom(chatHistoryElement);
+}
+
 
 function scrollToBottom(conainer) {
 	conainer.scrollTop = conainer.scrollHeight;
@@ -113,4 +165,8 @@ function truncateHistory(h) {
 		return h;
 	}
 }
+
+
+
+
 
