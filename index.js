@@ -7,7 +7,7 @@ let messageHistory = {
       role: 'system',
       content: `
         You are a poetic assistant. Write a single poetic verse in response to each prompt. 
-        Do not include the prompt in the response. Use json. The verses should relate to each other as it should become a complete poem.
+        Do not include the prompt in the response. Use json. The verses should relate to each other, but dont repeat verses. Dont use commas or periods at the end of a verse.
       `,
     },
   ],
@@ -96,26 +96,11 @@ async function sendPrompt(promptText) {
   appendVerse(newLine);
 }
 
-function downloadPoemAsPDF() {
-  const poemDisplay = document.querySelector(".poem-display");
-  if (!poemDisplay) return;
-
-  const verses = Array.from(poemDisplay.querySelectorAll(".verse")).map(el => el.textContent.trim()).join("\n\n");
-
-  const blob = new Blob([verses], { type: "application/pdf" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "poem.pdf";
-  link.click();
-  URL.revokeObjectURL(link.href);
-}
-
 // Setup
 window.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form");
   const input = document.querySelector("input[name='content']");
   const colorButtons = document.querySelectorAll(".color-buttons button");
-  const specialButtons = document.querySelectorAll(".submit-buttons button");
 
   if (!form || !input) return;
 
@@ -131,17 +116,6 @@ window.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", () => {
       const color = button.getAttribute("data-color");
       if (color) sendPrompt(color);
-    });
-  });
-
-  specialButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const special = button.getAttribute("data-special");
-      if (special === "Complete") {
-        downloadPoemAsPDF();
-      } else if (special) {
-        sendPrompt(special);
-      }
     });
   });
 });

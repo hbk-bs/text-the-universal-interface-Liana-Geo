@@ -1,41 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Poem Generator</title>
-	<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poem Generator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<main>
-		<h1 class="headline">Poem Generator</h1>
+  <main>
+    <h1 class="headline">Poem Generator</h1>
+    <div class="user-prompt"></div>
+    <div class="poem-display"></div>
 
-		<!-- Where the full interactive poem is built -->
-		<div class="poem-display"></div>
+    <form>
+      <input type="text" name="content" placeholder="Whisper a word..." />
+    </form>
 
-		<!-- Input for writing your whisper -->
-		<form>
-			<input type="text" name="content" placeholder="Whisper a word..." autocomplete="off" />
-		</form>
-
-		<!-- Thematic inspiration buttons -->
-		<div class="color-buttons">
-			<button type="button" data-color="Love">Love</button>
-			<button type="button" data-color="Hatred">Hatred</button>
-			<button type="button" data-color="Death">Death</button>
-			<button type="button" data-color="Life">Life</button>
-			<button type="button" data-color="Dreams">Dreams</button>
-			<button type="button" data-color="Loss">Loss</button>
-			<button type="button" data-color="Happiness">Happiness</button>
-			<button type="button" data-color="Sadness">Sadness</button>
-		</div>
-
-		<!-- Optional final signal -->
-		<div class="submit-buttons">
-			<button type="button" data-special="Complete">Complete</button>
-		</div>
-	</main>
-
-	<script src="index.js"></script>
+    <div class="color-buttons">
+      <button type="button" data-color="Love">Love</button>
+      <button type="button" data-color="Hatred">Hatred</button>
+      <button type="button" data-color="Death">Death</button>
+      <button type="button" data-color="Life">Life</button>
+      <button type="button" data-color="Dreams">Dreams</button>
+      <button type="button" data-color="Loss">Loss</button>
+      <button type="button" data-color="Happiness">Happiness</button>
+      <button type="button" data-color="Sadness">Sadness</button>
+    </div>
+  </main>
+  <script src="index.js"></script>
 </body>
 </html>
