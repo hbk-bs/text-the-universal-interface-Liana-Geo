@@ -1,43 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Chatty chat chat</title>
-	<link rel="stylesheet" href="style.css">
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Poetic Muse</title>
+	<link rel="stylesheet" href="style.css" />
 </head>
 <body>
 	<main>
-		<div class="chat-history">
+		<!-- Subtle user input display -->
+		<div class="user-prompt"></div>
 
-		</div>
+		<!-- Where the poem will be written -->
+		<div class="poem-display"></div>
+
+		<!-- Input for custom words -->
 		<form>
-			<form>
-	<input type="text" name="content">
-	<div class="submit-buttons">
-  <button type="button" data-special="start">Start</button>
-  <button type="button" data-special="end">End</button>
-</div>
+			<input type="text" name="content" placeholder="Whisper a word..." />
+		</form>
 
-	<form>
-  <div class="color-buttons">
-    <button type="button" data-color="red">Red</button>
-    <button type="button" data-color="orange">Orange</button>
-    <button type="button" data-color="yellow">Yellow</button>
-    <button type="button" data-color="green">Green</button>
-    <button type="button" data-color="blue">Blue</button>
-    <button type="button" data-color="purple">Purple</button>
-    <button type="button" data-color="pink">Pink</button>
-    <button type="button" data-color="black">Black</button>
-  </div>
+		<!-- Thematic word buttons -->
+		<div class="color-buttons">
+			<button type="button" data-color="Love">Love</button>
+			<button type="button" data-color="Hatred">Hatred</button>
+			<button type="button" data-color="Death">Death</button>
+			<button type="button" data-color="Life">Life</button>
+			<button type="button" data-color="Dreams">Dreams</button>
+			<button type="button" data-color="Loss">Loss</button>
+			<button type="button" data-color="Happiness">Happiness</button>
+			<button type="button" data-color="Sadness">Sadness</button>
+		</div>
 
-</form>
-
-	</div>
-</form>
-
-
+		<!-- Special button -->
+		<div class="submit-buttons">
+			<button type="button" data-special="Complete">Complete</button>
+		</div>
 	</main>
+
 	<script src="index.js"></script>
 </body>
 </html>
