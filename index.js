@@ -18,6 +18,7 @@ if (!apiEndpoint.includes('run')) {
   throw new Error('Please use your own val.town endpoint!!!');
 }
 
+
 const MAX_HISTORY_LENGTH = 20;
 
 function scrollToBottom(container) {
