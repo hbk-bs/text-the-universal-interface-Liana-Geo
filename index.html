@@ -3,23 +3,22 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Poetic Muse</title>
+	<title>Poem Generator</title>
 	<link rel="stylesheet" href="style.css" />
 </head>
 <body>
 	<main>
-		<!-- Subtle user input display -->
-		<div class="user-prompt"></div>
+		<h1 class="headline">Poem Generator</h1>
 
-		<!-- Where the poem will be written -->
+		<!-- Where the full interactive poem is built -->
 		<div class="poem-display"></div>
 
-		<!-- Input for custom words -->
+		<!-- Input for writing your whisper -->
 		<form>
-			<input type="text" name="content" placeholder="Whisper a word..." />
+			<input type="text" name="content" placeholder="Whisper a word..." autocomplete="off" />
 		</form>
 
-		<!-- Thematic word buttons -->
+		<!-- Thematic inspiration buttons -->
 		<div class="color-buttons">
 			<button type="button" data-color="Love">Love</button>
 			<button type="button" data-color="Hatred">Hatred</button>
@@ -31,7 +30,7 @@
 			<button type="button" data-color="Sadness">Sadness</button>
 		</div>
 
-		<!-- Special button -->
+		<!-- Optional final signal -->
 		<div class="submit-buttons">
 			<button type="button" data-special="Complete">Complete</button>
 		</div>
