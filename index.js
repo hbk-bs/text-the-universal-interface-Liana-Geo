@@ -1,101 +1,147 @@
-//@ts-check
-
-const MAX_HISTORY_LENGTH = 10;
-const apiEndpoint = 'https://lianageo--2fae5f5953854a7a93380424561eeddc.web.val.run';
-
-if (!apiEndpoint.includes('run')) {
-	throw new Error('Please use your own val.town endpoint!');
-}
+// index.js for Interactive Poem Generator
 
 let messageHistory = {
-	messages: [
-		{
-			role: 'system',
-			content: `You are a poet. Respond to each word or phrase with a short, elegant poetic verse. Reply only with the poem.`,
-		},
-	],
+  response_format: { type: 'json_object' },
+  messages: [
+    {
+      role: 'system',
+      content: `
+        You are a poetic assistant. Write a single poetic verse in response to each prompt. 
+        Do not include the prompt in the response. Use json. The verses should relate to each other as it should become a complete poem.
+      `,
+    },
+  ],
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-	const poemDisplay = document.querySelector('.poem-display');
-	const userPromptDisplay = document.querySelector('.user-prompt');
-	const inputElement = document.querySelector('input[name="content"]');
-	const formElement = document.querySelector('form');
+const apiEndpoint = 'https://lianageo--2fae5f5953854a7a93380424561eeddc.web.val.run';
+if (!apiEndpoint.includes('run')) {
+  throw new Error('Please use your own val.town endpoint!!!');
+}
 
-	if (!poemDisplay || !inputElement || !formElement || !userPromptDisplay) {
-		throw new Error('Required elements are missing in the DOM.');
-	}
+const MAX_HISTORY_LENGTH = 20;
 
-	formElement.addEventListener('submit', async (event) => {
-		event.preventDefault();
-		const formData = new FormData(formElement);
-		const content = formData.get('content');
-		if (!content) return;
-
-		await sendPromptAndRender(String(content));
-		inputElement.value = '';
-	});
-
-	document.querySelectorAll('.color-buttons button').forEach((button) => {
-		button.addEventListener('click', () => {
-			const color = button.getAttribute('data-color');
-			if (color) sendPromptAndRender(color);
-		});
-	});
-
-	document.querySelectorAll('.submit-buttons button').forEach((button) => {
-		button.addEventListener('click', () => {
-			const special = button.getAttribute('data-special');
-			if (special) sendPromptAndRender(special);
-		});
-	});
-});
-
-async function sendPromptAndRender(content) {
-	const poemDisplay = document.querySelector('.poem-display');
-	const userPromptDisplay = document.querySelector('.user-prompt');
-	if (!poemDisplay || !userPromptDisplay) return;
-
-	userPromptDisplay.textContent = `Prompt: ${content}`;
-
-	messageHistory.messages.push({ role: 'user', content });
-	messageHistory = truncateHistory(messageHistory);
-
-	const response = await fetch(apiEndpoint, {
-		method: 'POST',
-		headers: { 'content-type': 'application/json' },
-		body: JSON.stringify(messageHistory),
-	});
-
-	if (!response.ok) {
-		const errorText = await response.text();
-		throw new Error(errorText);
-	}
-
-	const data = await response.json();
-	const assistantMessage = data.completion.choices[0].message;
-	messageHistory.messages.push(assistantMessage);
-	messageHistory = truncateHistory(messageHistory);
-
-	typeTextEffect(poemDisplay, assistantMessage.content.trim());
+function scrollToBottom(container) {
+  container.scrollTop = container.scrollHeight;
 }
 
 function truncateHistory(history) {
-	const [system, ...rest] = history.messages;
-	const trimmed = rest.slice(-MAX_HISTORY_LENGTH);
-	return { messages: [system, ...trimmed] };
+  if (!history || !history.messages || history.messages.length <= 1) {
+    return history;
+  }
+  const [system, ...rest] = history.messages;
+  if (rest.length > MAX_HISTORY_LENGTH) {
+    return { ...history, messages: [system, ...rest.slice(-MAX_HISTORY_LENGTH)] };
+  }
+  return history;
 }
 
-function typeTextEffect(element, text, speed = 40) {
-	element.textContent = '';
-	let i = 0;
+function appendVerse(verse) {
+  const poemDisplay = document.querySelector(".poem-display");
+  if (!poemDisplay) return;
 
-	const interval = setInterval(() => {
-		element.textContent += text.charAt(i);
-		i++;
-		if (i >= text.length) {
-			clearInterval(interval);
-		}
-	}, speed);
+  const verseElement = document.createElement("div");
+  verseElement.classList.add("verse");
+  verseElement.textContent = "";
+  poemDisplay.appendChild(verseElement);
+
+  // Typewriter effect
+  let i = 0;
+  const interval = setInterval(() => {
+    verseElement.textContent += verse.charAt(i);
+    i++;
+    if (i >= verse.length) clearInterval(interval);
+    scrollToBottom(poemDisplay);
+  }, 30);
 }
 
+async function sendPrompt(promptText) {
+  if (!promptText) return;
+  const poemDisplay = document.querySelector(".poem-display");
+  if (!poemDisplay) return;
+
+  messageHistory.messages.push({ role: "user", content: promptText });
+  messageHistory = truncateHistory(messageHistory);
+
+  const response = await fetch(apiEndpoint, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(messageHistory),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(errorText);
+    return;
+  }
+
+  const json = await response.json();
+  let newLine = json.completion.choices[0].message.content.trim();
+
+  // Try to parse out unwanted JSON keys if still present
+  try {
+    const parsed = JSON.parse(newLine);
+    if (typeof parsed === "object") {
+      const values = Object.values(parsed);
+      if (values.length > 0 && typeof values[0] === "string") {
+        newLine = values[0];
+      }
+    }
+  } catch (e) {
+    // Not JSON, keep as-is
+  }
+
+  messageHistory.messages.push({ role: "assistant", content: newLine });
+  appendVerse(newLine);
+}
+
+function downloadPoemAsPDF() {
+  const poemDisplay = document.querySelector(".poem-display");
+  if (!poemDisplay) return;
+
+  const verses = Array.from(poemDisplay.querySelectorAll(".verse")).map(el => el.textContent.trim()).join("\n\n");
+
+  const blob = new Blob([verses], { type: "application/pdf" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "poem.pdf";
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+// Setup
+window.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("form");
+  const input = document.querySelector("input[name='content']");
+  const colorButtons = document.querySelectorAll(".color-buttons button");
+  const specialButtons = document.querySelectorAll(".submit-buttons button");
+
+  if (!form || !input) return;
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const value = input.value.trim();
+    if (!value) return;
+    sendPrompt(value);
+    input.value = "";
+  });
+
+  colorButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const color = button.getAttribute("data-color");
+      if (color) sendPrompt(color);
+    });
+  });
+
+  specialButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const special = button.getAttribute("data-special");
+      if (special === "Complete") {
+        downloadPoemAsPDF();
+      } else if (special) {
+        sendPrompt(special);
+      }
+    });
+  });
+});
